@@ -1,6 +1,32 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKER_ACCOUNT')
+        DOCKER_IMAGE = 'matsandy/mon-site-web:latest'
+        DOCKER_TAG = 'latest'
+    }
+
+    stages {
+        stage('SSH') {
+            steps {
+                sshagent(['remote_credentials']) {
+                    sh '''
+                      ssh -o StrictHostKeyChecking=no larissa@192.168.1.124 << 'EOF'
+                      docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
+                      docker run -p 8080:8008 -d ${DOCKER_IMAGE}
+                      EOF
+                    '''
+                }
+            }
+        }
+    }
+}
+
+
+/*pipeline {
+    agent any
+
     environment{
     DOCKERHUB_CREDENTIALS = credentials('DOCKER_ACCOUNT')
     DOCKER_IMAGE = 'matsandy/mon-site-web:latest'
@@ -25,7 +51,9 @@ pipeline {
     }
 }
 
-/*pipeline{
+
+
+pipeline{
   agent any
 
   environment{
