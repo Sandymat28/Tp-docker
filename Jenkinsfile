@@ -10,9 +10,9 @@ pipeline {
     stages {
         stage('SSH') {
             steps {
-                sshagent(['remote_credentials']) {
+                //sshagent(['remote_credentials']) {
                     sh '''
-                      ssh -t -o StrictHostKeyChecking=no larissa@192.168.1.124 << 'EOF'
+                      ssh -t -o StrictHostKeyChecking=no greatness@192.168.1.212 << 'EOF'
                       docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
                       docker run -p 8080:8008 -d ${DOCKER_IMAGE}
                       
