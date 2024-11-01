@@ -3,13 +3,14 @@ pipeline{
 
   environment{
     DOCKERHUB_CREDENTIALS = credentials('DOCKER_ACCOUNT')
-    DOCKER_IMAGE = 'matsandy/example-kube:latest'
+    DOCKER_IMAGE = 'matsandy/mon-site-web:latest'
     DOCKER_TAG = 'latest'
     //SANDY_CREDENTIALS = credentials('remote_credentials')
       
-    HOSTNAME_DEPLOY = '192.168.1.133'
-    DEPLOY_USER = 'sandy'
+    HOSTNAME_DEPLOY = '192.168.1.124'
+    DEPLOY_USER = 'larissa'
   }
+  
   stages{
     stage ('Deploy in staging') {
         steps {
@@ -22,7 +23,7 @@ pipeline{
                           docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
 
                           # Redémarrez les conteneurs avec la nouvelle image
-                          docker compose up -d
+                          docker run -p 8080:8008 -d ${DOCKER_IMAGE}
                         EOF
                         """
                     }
