@@ -1,4 +1,31 @@
-pipeline{
+pipeline {
+    agent any
+
+    environment{
+    DOCKERHUB_CREDENTIALS = credentials('DOCKER_ACCOUNT')
+    DOCKER_IMAGE = 'matsandy/mon-site-web:latest'
+    DOCKER_TAG = 'latest'
+    //HOSTNAME_DEPLOY = '192.168.1.124'
+    //DEPLOY_USER = 'larissa'
+    }
+  
+    stages {
+        stage('SSH') {
+            steps {
+                sshagent(['remote_credentials']) {
+                    sh 'ssh-add ~/.ssh/id_rsa'
+                    sh '''
+                      ssh larissa@192.168.1.124 "
+                      docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
+                      docker run -p 8080:8008 -d ${DOCKER_IMAGE}"
+                    '''
+                }
+            }
+        }
+    }
+}
+
+/*pipeline{
   agent any
 
   environment{
@@ -37,5 +64,4 @@ pipeline{
         sh 'docker logout'
       }
   }
-}
-      
+}*/
