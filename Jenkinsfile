@@ -38,14 +38,14 @@ pipeline {
     stages {
         stage('SSH') {
             steps {
-                sshagent(['remote_credentials']) {
-                    sh 'ssh-add ~/.ssh/id_rsa'
-                    sh '''
-                      ssh larissa@192.168.1.124 "
-                      docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                      docker run -p 8080:8008 -d ${DOCKER_IMAGE}"
-                    '''
-                }
+                // sshagent(['remote_credentials']) {
+                sh 'ssh-add ~/.ssh/id_rsa'
+                sh '''
+                    ssh larissa@192.168.1.124 "
+                    docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
+                    docker run -p 8080:8008 -d ${DOCKER_IMAGE}"
+                '''
+                // }
             }
         }
     }
