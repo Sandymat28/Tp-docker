@@ -17,7 +17,6 @@ pipeline {
                       docker run -p 8080:8089 -d ${DOCKER_IMAGE}
                       
                     '''
-                }
             }
         }
     }
