@@ -7,7 +7,7 @@ pipeline {
         DOCKER_TAG = 'latest'
     }
 
-    /*stages {
+    stages {
         stage('SSH') {
             steps {
                 sshagent(['remote_credentials']) {
@@ -15,7 +15,7 @@ pipeline {
                       ssh -t -o StrictHostKeyChecking=no larissa@192.168.1.124 << 'EOF'
                       docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
                       docker run -p 8080:8008 -d ${DOCKER_IMAGE}
-                      EOF
+                      
                     '''
                 }
             }
@@ -35,21 +35,21 @@ pipeline {
     //DEPLOY_USER = 'larissa'
     }*/
   
-    stages {
-        stage('SSH') {
-            steps {
-                script{
-                // sshagent(['remote_credentials']) {
-                // sh 'ssh-add ~/.ssh/id_rsa'
-                    sh '''
-                        ssh larissa@192.168.1.124 << EOF
-                        docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                        docker run -p 8080:8008 -d ${DOCKER_IMAGE}
-                    '''
-                }
-            }
-        }
-    }
+    // stages {
+    //     stage('SSH') {
+    //         steps {
+    //             script{
+    //             // sshagent(['remote_credentials']) {
+    //             // sh 'ssh-add ~/.ssh/id_rsa'
+    //                 sh '''
+    //                     ssh larissa@192.168.1.124 << EOF
+    //                     docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
+    //                     docker run -p 8080:8008 -d ${DOCKER_IMAGE}
+    //                 '''
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 
