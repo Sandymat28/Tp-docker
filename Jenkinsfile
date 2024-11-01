@@ -7,7 +7,7 @@ pipeline {
         DOCKER_TAG = 'latest'
     }
 
-    stages {
+    /*stages {
         stage('SSH') {
             steps {
                 sshagent(['remote_credentials']) {
@@ -33,13 +33,13 @@ pipeline {
     DOCKER_TAG = 'latest'
     //HOSTNAME_DEPLOY = '192.168.1.124'
     //DEPLOY_USER = 'larissa'
-    }
+    }*/
   
     stages {
         stage('SSH') {
             steps {
                 sshagent(['remote_credentials']) {
-                    //sh 'ssh-add ~/.ssh/id_rsa'
+                    sh 'ssh-add ~/.ssh/id_rsa'
                     sh '''
                       ssh larissa@192.168.1.124 "
                       docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
@@ -53,7 +53,7 @@ pipeline {
 
 
 
-pipeline{
+/*pipeline{
   agent any
 
   environment{
