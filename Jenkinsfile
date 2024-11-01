@@ -14,7 +14,7 @@ pipeline {
                     sh '''
                       ssh -t -o StrictHostKeyChecking=no greatness@192.168.1.212 << 'EOF'
                       docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                      docker run -p 8080:8008 -d ${DOCKER_IMAGE}
+                      docker run -p 8080:8089 -d ${DOCKER_IMAGE}
                       
                     '''
                 }
