@@ -35,7 +35,7 @@ pipeline {
             steps {
                 sshagent(credentials: [SSH_CREDENTIALS_ID]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run -p 8086:8080 -d matsandy/mon-site-web:latest'
+                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run -p 8086:80 -d matsandy/mon-site-web:latest'
                     """
                 }
             }
