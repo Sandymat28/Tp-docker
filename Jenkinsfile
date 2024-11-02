@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SSH_CREDENTIALS_ID = 'remote_credentials'
+        SSH_CREDENTIALS_ID = 'remote_credentials' // ID des credentials SSH dans Jenkins
         SERVER_IP = '192.168.1.124'
         USERNAME = 'larissa'
     }
@@ -10,37 +10,33 @@ pipeline {
     stages {
         stage('Verify SSH Connection') {
             steps {
-                script {
-                    // Tester la connexion SSH
-                    def sshCommand = """
-                       sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'echo "Connection successful!"'
+                sshagent(credentials: [SSH_CREDENTIALS_ID]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'echo "Connection successful!"'
                     """
-                    sh sshCommand
                 }
             }
         }
 
         stage('Update and Upgrade Packages') {
             steps {
-                script {
-                    // Mettre à jour et mettre à niveau les paquets sur la machine distante
-                    def sshCommand = """
-                        sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
+                sshagent(credentials: [SSH_CREDENTIALS_ID]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
                         sudo apt-get update
                         sudo apt-get upgrade -y
                         EOF
                     """
-                    sh sshCommand
                 }
             }
         }
 
         stage('Execute Docker Command') {
             steps {
-                script {
-                    // Exécuter une commande Docker sur la machine distante
-                    def dockerCommand = "sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run --rm matsandy/mon-site-web:latest'"
-                    sh dockerCommand
+                sshagent(credentials: [SSH_CREDENTIALS_ID]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run --rm matsandy/mon-site-web:latest'
+                    """
                 }
             }
         }
@@ -52,6 +48,62 @@ pipeline {
         }
     }
 }
+
+
+// pipeline {
+//     agent any
+
+//     environment {
+//         SSH_CREDENTIALS_ID = 'remote_credentials'
+//         SERVER_IP = '192.168.1.124'
+//         USERNAME = 'larissa'
+//     }
+
+//     stages {
+//         stage('Verify SSH Connection') {
+//             steps {
+//                 script {
+//                     // Tester la connexion SSH
+//                     def sshCommand = """
+//                        sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'echo "Connection successful!"'
+//                     """
+//                     sh sshCommand
+//                 }
+//             }
+//         }
+
+//         stage('Update and Upgrade Packages') {
+//             steps {
+//                 script {
+//                     // Mettre à jour et mettre à niveau les paquets sur la machine distante
+//                     def sshCommand = """
+//                         sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
+//                         sudo apt-get update
+//                         sudo apt-get upgrade -y
+//                         EOF
+//                     """
+//                     sh sshCommand
+//                 }
+//             }
+//         }
+
+//         stage('Execute Docker Command') {
+//             steps {
+//                 script {
+//                     // Exécuter une commande Docker sur la machine distante
+//                     def dockerCommand = "sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run --rm matsandy/mon-site-web:latest'"
+//                     sh dockerCommand
+//                 }
+//             }
+//         }
+//     }
+
+//     post {
+//         always {
+//             echo 'Pipeline terminé.'
+//         }
+//     }
+// }
 // pipeline {
 //     agent any
 
