@@ -4,14 +4,26 @@ pipeline {
     environment {
         SSH_CREDENTIALS_ID = 'remote_credentials'
         SERVER_IP = '192.168.1.124'
-        USERNAME = 'larissa'
+        USERNAME = 'sandy'
     }
 
     stages {
-        stage('SSH Connection and Update') {
+        stage('Verify SSH Connection') {
             steps {
                 script {
-                    // Connexion SSH et mise à jour des paquets
+                    // Tester la connexion SSH
+                    def sshCommand = """
+                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'echo "Connection successful!"'
+                    """
+                    sh sshCommand
+                }
+            }
+        }
+
+        stage('Update and Upgrade Packages') {
+            steps {
+                script {
+                    // Mettre à jour et mettre à niveau les paquets sur la machine distante
                     def sshCommand = """
                         ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
                         sudo apt-get update
@@ -22,12 +34,12 @@ pipeline {
                 }
             }
         }
-        
-        stage('Docker Command') {
+
+        stage('Execute Docker Command') {
             steps {
                 script {
-                    // Exécution de la commande Docker
-                    def dockerCommand = "docker run --rm matsandy/mon-site-web:latest"
+                    // Exécuter une commande Docker sur la machine distante
+                    def dockerCommand = "ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run --rm matsandy/mon-site-web:latest'"
                     sh dockerCommand
                 }
             }
@@ -39,6 +51,7 @@ pipeline {
             echo 'Pipeline terminé.'
         }
     }
+}
 }// pipeline {
 //     agent any
 
