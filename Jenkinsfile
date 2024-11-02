@@ -18,18 +18,18 @@ pipeline {
             }
         }
 
-        stage('Update and Upgrade Packages') {
-            steps {
-                sshagent(credentials: [SSH_CREDENTIALS_ID]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
-                        sudo apt-get update
-                        sudo apt-get upgrade -y
-                        EOF
-                    """
-                }
-            }
-        }
+        // stage('Update and Upgrade Packages') {
+        //     steps {
+        //         sshagent(credentials: [SSH_CREDENTIALS_ID]) {
+        //             sh """
+        //                 ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
+        //                 sudo apt-get update
+        //                 sudo apt-get upgrade -y
+        //                 EOF
+        //             """
+        //         }
+        //     }
+        // }
 
         stage('Execute Docker Command') {
             steps {
