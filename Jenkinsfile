@@ -13,7 +13,7 @@ pipeline {
                 script {
                     // Tester la connexion SSH
                     def sshCommand = """
-                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'echo "Connection successful!"'
+                       sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'echo "Connection successful!"'
                     """
                     sh sshCommand
                 }
@@ -25,7 +25,7 @@ pipeline {
                 script {
                     // Mettre à jour et mettre à niveau les paquets sur la machine distante
                     def sshCommand = """
-                        ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
+                        sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} << 'EOF'
                         sudo apt-get update
                         sudo apt-get upgrade -y
                         EOF
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Exécuter une commande Docker sur la machine distante
-                    def dockerCommand = "ssh -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run --rm matsandy/mon-site-web:latest'"
+                    def dockerCommand = "sudo ssh -t -o StrictHostKeyChecking=no ${USERNAME}@${SERVER_IP} 'docker run --rm matsandy/mon-site-web:latest'"
                     sh dockerCommand
                 }
             }
