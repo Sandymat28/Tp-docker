@@ -3,24 +3,51 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DOCKER_ACCOUNT')
-        DOCKER_IMAGE = 'matsandy/mon-site-web:latest'
+        DOCKER_IMAGE = 'matsandy/mon-site-web'
         DOCKER_TAG = 'latest'
     }
 
     stages {
         stage('SSH') {
             steps {
-                //sshagent(['remote_credentials']) {
+                sshagent(['remote_credentials']) {
                     sh '''
-                      ssh -t -o StrictHostKeyChecking=no greatness@192.168.1.212 << 'EOF'
-                      docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                      docker run -p 8089:8080 -d ${DOCKER_IMAGE}
-                      
+                      ssh -o StrictHostKeyChecking=no greatness@192.168.1.212 << 'EOF'
+                      docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
+                      docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
+                      docker run -p 8089:8080 -d ${DOCKER_IMAGE}:${DOCKER_TAG}
+                      EOF
                     '''
+                }
             }
         }
     }
 }
+
+
+// pipeline {
+//     agent any
+
+//     environment {
+//         DOCKERHUB_CREDENTIALS = credentials('DOCKER_ACCOUNT')
+//         DOCKER_IMAGE = 'matsandy/mon-site-web:latest'
+//         DOCKER_TAG = 'latest'
+//     }
+
+//     stages {
+//         stage('SSH') {
+//             steps {
+//                 //sshagent(['remote_credentials']) {
+//                     sh '''
+//                       ssh -t -o StrictHostKeyChecking=no greatness@192.168.1.212 << 'EOF'
+//                       docker pull ${DOCKERHUB_CREDENTIALS_USR}/${DOCKER_IMAGE}:${DOCKER_TAG}
+//                       docker run -p 8089:8080 -d ${DOCKER_IMAGE}
+                      
+//                     '''
+//             }
+//         }
+//     }
+// }
 
 
 /*pipeline {
