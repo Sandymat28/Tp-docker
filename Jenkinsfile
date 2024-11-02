@@ -4,7 +4,7 @@ pipeline {
     environment {
         SSH_CREDENTIALS_ID = 'remote_credentials'
         SERVER_IP = '192.168.1.124'
-        USERNAME = 'sandy'
+        USERNAME = 'larissa'
     }
 
     stages {
